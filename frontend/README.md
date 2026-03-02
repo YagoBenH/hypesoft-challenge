@@ -11,26 +11,24 @@ Aplicação frontend em Next.js com autenticação via Keycloak e consumo de API
 - Keycloak JS
 
 ## Pré-requisitos
-
-- Node.js 20+
-- npm 10+
-- Keycloak acessível (local ou remoto)
-- API backend acessível (local ou remota)
+- npm 
+- Keycloak acessível
+- API backend acessível
 
 ## Configuração de ambiente
 
 1. Copie o arquivo de exemplo:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 No Windows (PowerShell):
 
 ```powershell
-Copy-Item .env.example .env.local
+Copy-Item .env.example .env
 ```
 
-2. Preencha as variáveis no `.env.local`.
+2. Preencha as variáveis no `.env`.
 
 ### Variáveis obrigatórias
 
@@ -66,7 +64,7 @@ docker run --name keycloak -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMI
 
 Depois acesse:
 
-- `http://localhost:8080`
+- `http://localhost:8080` se precisar `/admin`
 - Clique em **Administration Console**
 - Login admin:
 	- usuário: `admin`
@@ -91,21 +89,7 @@ docker rm -f keycloak
 
 ## Troubleshooting
 
-### 1) `Keycloak env vars ausentes`
-
-Preencha no `.env.local`:
-
-- `NEXT_PUBLIC_KEYCLOAK_URL`
-- `NEXT_PUBLIC_KEYCLOAK_REALM`
-- `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID`
-
-### 2) `Defina NEXT_PUBLIC_API_URL`
-
-Defina `NEXT_PUBLIC_API_URL` no `.env.local`.
-
-### 3) Erro de login/redirect no Keycloak
-
-Verifique no client do Keycloak:
+Preencher no client do Keycloak:
 
 - Valid Redirect URIs (incluindo `http://localhost:3000/*`)
 - Web Origins (incluindo `http://localhost:3000`)
