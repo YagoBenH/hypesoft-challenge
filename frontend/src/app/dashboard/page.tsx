@@ -4,12 +4,54 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import type { Product } from "@/types/products";
 
 const products: Product[] = [
-  { id: "1", name: "Notebook Pro", category: "Eletrônicos", price: 4500, stock: 6 },
-  { id: "2", name: "Mouse Gamer", category: "Periféricos", price: 180, stock: 22 },
-  { id: "3", name: "Teclado Mecânico", category: "Periféricos", price: 320, stock: 8 },
-  { id: "4", name: "Monitor 27", category: "Eletrônicos", price: 1600, stock: 12 },
-  { id: "5", name: "Cadeira Office", category: "Móveis", price: 980, stock: 4 },
-  { id: "6", name: "Mesa Stand", category: "Móveis", price: 1300, stock: 9 },
+  {
+    id: "1",
+    name: "Notebook Pro",
+    description: "Notebook para uso corporativo",
+    category: "Eletrônicos",
+    price: 4500,
+    stock: 6,
+  },
+  {
+    id: "2",
+    name: "Mouse Gamer",
+    description: "Mouse ergonômico com alta precisão",
+    category: "Periféricos",
+    price: 180,
+    stock: 22,
+  },
+  {
+    id: "3",
+    name: "Teclado Mecânico",
+    description: "Teclado mecânico com iluminação RGB",
+    category: "Periféricos",
+    price: 320,
+    stock: 8,
+  },
+  {
+    id: "4",
+    name: "Monitor 27",
+    description: "Monitor de alta definição 27 polegadas",
+    category: "Eletrônicos",
+    price: 1600,
+    stock: 12,
+  },
+  {
+    id: "5",
+    name: "Cadeira Office",
+    description: "Cadeira com apoio lombar ajustável",
+    category: "Móveis",
+    price: 980,
+    stock: 4,
+  },
+  {
+    id: "6",
+    name: "Mesa Stand",
+    description: "Mesa com ajuste de altura",
+    category: "Móveis",
+    price: 1300,
+    stock: 9,
+  },
 ];
 
 
