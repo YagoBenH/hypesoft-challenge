@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/products", label: "Products" },
+  { href: "/products", label: "Produtos" },
 ];
 
 
