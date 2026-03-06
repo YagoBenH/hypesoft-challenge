@@ -41,27 +41,23 @@ Copy-Item .env.example .env.local
 
 ### Variáveis para a API do dashboard
 
-Este projeto pode funcionar de 2 formas:
-
-1) **Mock local (recomendado para testar rápido)**
+1) **Mock local (para testar)**
 
 - `API_URL=http://localhost:3000/api`
 
 Isso faz o dashboard chamar `http://localhost:3000/api/metrics/dashboard` (mock do Next).
 
-2) **Backend real (se você tiver uma API rodando)**
+2) **Backend real (se tivesse uma API rodando)**
 
 - `NEXT_PUBLIC_API_URL=http://localhost:5000` (exemplo)
 
-> Não tem um backend, use o mock.
-
 ## Mock do endpoint do Dashboard
 
-Para facilitar testes sem backend, este projeto expõe um endpoint mock em:
+Para testes sem backend, este projeto tem um endpoint mock:
 
 - `GET http://localhost:3000/api/metrics/dashboard`
 
-Ele retorna uma lista fixa de produtos (`Product[]`) e é implementado em:
+Ele retorna uma lista de produtos (`Product[]`) e é implementado em:
 
 - `src/app/api/metrics/dashboard/route.ts`
 
