@@ -16,8 +16,8 @@ export const TextInput = forwardRef<
         ref={ref}
         className={`w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-(--foreground)/20 ${
           error
-            ? "border-[color:var(--foreground)]"
-            : "border-[color:var(--foreground)]/20"
+            ? "border-(--foreground)"
+            : "border-(--foreground)/20"
         } ${className ?? ""}`}
         {...props}
       />

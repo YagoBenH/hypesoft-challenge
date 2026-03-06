@@ -27,6 +27,11 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const keycloakAdmin = useMemo(() => {
+    const base = (process.env.NEXT_PUBLIC_KEYCLOAK_URL ?? "http://localhost:8080").replace(/\/+$/, "");
+    return `${base}/admin`;
+  }, []);
+
   const next = useMemo(() => {
     const raw = searchParams.get("next");
     return raw && raw.startsWith("/") ? raw : "/dashboard";
@@ -102,19 +107,15 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-4">
-            <Button
-              type="button"
-              disabled={!auth.initialized || submitting}
-              onClick={() => auth.login({ redirectTo: next })}
-            >
-              Entrar com Keycloak
-            </Button>
-          </div>
-
           <p className="mt-6 text-xs opacity-70">
-            Ao continua, você será direcionado para
-            o login do Keycloak.
+            <a
+              href={keycloakAdmin}
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              Clique para cadastrar novo usuário no login do Keycloak.
+            </a>
           </p>
         </Card>
       </div>

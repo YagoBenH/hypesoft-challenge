@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/Card";
 
-type CategoryData = {
+type Category = {
   category: string;
   total: number;
 };
 
 type ProductsCategory = {
-  data: CategoryData[];
+  data: Category[];
 };
 
 export function ProdutosCategoria({ data }: ProductsCategory) {

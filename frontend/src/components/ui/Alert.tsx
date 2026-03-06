@@ -13,7 +13,7 @@ export function Alert({ title, children, className = "" }: AlertProps) {
     <div
       className={[
         "rounded-lg border px-4 py-3 text-sm",
-        "border-[color:var(--foreground)]/20",
+        "border-(--foreground)/20",
         className,
       ]
         .filter(Boolean)
@@ -32,7 +32,7 @@ export function ErrorAlert({ title, children, className = "" }: AlertProps) {
     <div
       className={[
         "rounded-lg border px-4 py-3 text-sm",
-        "border-[color:var(--foreground)]/40",
+        "border-(--foreground)/40",
         className,
       ]
         .filter(Boolean)

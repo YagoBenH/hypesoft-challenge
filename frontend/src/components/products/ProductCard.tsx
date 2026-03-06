@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,10 +14,7 @@ const productSchema = z.object({
   description: z.string().trim().min(1, "Informe a descrição do produto"),
   price: z.coerce.number().positive("Informe um preço maior que zero"),
   category: z.string().trim().min(1, "Informe a categoria"),
-  stock: z.coerce
-    .number()
-    .int("Informe um número inteiro")
-    .min(0, "Estoque não pode ser negativo"),
+  stock: z.coerce.number().int("Informe um número inteiro") .min(0, "Estoque não pode ser negativo"),
 });
 
 type ProductInput = z.input<typeof productSchema>;
@@ -50,7 +48,7 @@ export function ProductCard({
     defaultValues: initialValues ?? emptyValues,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     reset(initialValues ?? emptyValues);
   }, [initialValues, reset]);
 

@@ -8,32 +8,6 @@ import { ProductCard,  type ProductValues,} from "@/components/products/ProductC
 import { TextInput } from "@/components/ui/TextInput";
 import type { Product } from "@/types/products";
 
-const creatProducts: Product[] = [
-  {
-    id: "1",
-    name: "Notebook Pro",
-    description: "Notebook para uso corporativo",
-    category: "Eletrônicos",
-    price: 4500,
-    stock: 6,
-  },
-  {
-    id: "2",
-    name: "Mouse Gamer",
-    description: "Mouse ergonômico com alta precisão",
-    category: "Periféricos",
-    price: 180,
-    stock: 22,
-  },
-  {
-    id: "3",
-    name: "Cadeira Office",
-    description: "Cadeira com apoio lombar ajustável",
-    category: "Móveis",
-    price: 980,
-    stock: 4,
-  },
-];
 
 function formatCurrencyBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -44,7 +18,7 @@ function formatCurrencyBRL(value: number) {
 
 
 export default function ProductsPage() {
-  const [products, setProducts] = React.useState<Product[]>(creatProducts);
+  const [products, setProducts] = React.useState<Product[]>([]);
   const [editingProductId, setEditingProductId] = React.useState<string | null>(null);
   const [showFormCard, setShowFormCard] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -145,14 +119,16 @@ export default function ProductsPage() {
       ) : null}
 
       <Card>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          <TextInput
-            label="Buscar por nome"
-            placeholder="Digite o nome do produto"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-          />
-          <label className="flex w-full flex-col gap-1 sm:max-w-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:items-end">
+          <div className="flex-1">
+            <TextInput
+              label="Buscar por nome"
+              placeholder="Digite o nome do produto"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
+          <label className="flex w-full flex-col gap-1 sm:w-auto sm:max-w-xs">
             <span className="text-sm font-medium">Filtrar por categoria</span>
             <select
               className="w-full rounded-lg border border-(--foreground)/20 px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-(--foreground)/20"
@@ -174,47 +150,85 @@ export default function ProductsPage() {
               Ajuste a busca ou o filtro para visualizar itens.
             </Alert>
           ) : (
-            <table className="w-full min-w-180 border-separate border-spacing-y-2">
-              <thead>
-                <tr className="text-left text-sm opacity-80">
-                  <th className="px-3 py-2">Nome</th>
-                  <th className="px-3 py-2">Descrição</th>
-                  <th className="px-3 py-2">Categoria</th>
-                  <th className="px-3 py-2">Preço</th>
-                  <th className="px-3 py-2">Estoque</th>
-                  <th className="px-3 py-2">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              <div className="block sm:hidden space-y-3">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="rounded-lg border border-(--foreground)/10">
-                    <td className="px-3 py-2 text-sm font-medium">{product.name}</td>
-                    <td className="px-3 py-2 text-sm">{product.description}</td>
-                    <td className="px-3 py-2 text-sm">{product.category}</td>
-                    <td className="px-3 py-2 text-sm">{formatCurrencyBRL(product.price)}</td>
-                    <td className="px-3 py-2 text-sm">{product.stock}</td>
-                    <td className="px-3 py-2">
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          className="h-9 w-auto px-4 text-sm"
-                          onClick={() => handleEdit(product)}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          type="button"
-                          className="h-9 w-auto px-4 text-sm"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          Excluir
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+                  <div
+                    key={product.id}
+                    className="rounded-lg border border-(--foreground)/10 p-4 space-y-2"
+                  >
+                    <div className="flex justify-between items-start gap-2">
+                      <h3 className="font-medium text-sm flex-1">{product.name}</h3>
+                      <span className="text-sm font-semibold text-blue-600">
+                        {formatCurrencyBRL(product.price)}
+                      </span>
+                    </div>
+                    <p className="text-xs opacity-70">{product.description}</p>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="opacity-70">{product.category}</span>
+                      <span className="opacity-70">Estoque: {product.stock}</span>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        type="button"
+                        className="flex-1 h-9 text-sm"
+                        onClick={() => handleEdit(product)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        type="button"
+                        className="flex-1 h-9 text-sm"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+              <table className="w-full border-separate border-spacing-y-2 hidden sm:table">
+                <thead>
+                  <tr className="text-left text-sm opacity-80">
+                    <th className="px-3 py-2">Nome</th>
+                    <th className="px-3 py-2">Descrição</th>
+                    <th className="px-3 py-2">Categoria</th>
+                    <th className="px-3 py-2">Preço</th>
+                    <th className="px-3 py-2">Estoque</th>
+                    <th className="px-3 py-2">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((product) => (
+                    <tr key={product.id} className="rounded-lg border border-(--foreground)/10">
+                      <td className="px-3 py-2 text-sm font-medium">{product.name}</td>
+                      <td className="px-3 py-2 text-sm">{product.description}</td>
+                      <td className="px-3 py-2 text-sm">{product.category}</td>
+                      <td className="px-3 py-2 text-sm">{formatCurrencyBRL(product.price)}</td>
+                      <td className="px-3 py-2 text-sm">{product.stock}</td>
+                      <td className="px-3 py-2">
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            className="h-9 w-auto px-4 text-sm"
+                            onClick={() => handleEdit(product)}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            type="button"
+                            className="h-9 w-auto px-4 text-sm"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            Excluir
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </Card>

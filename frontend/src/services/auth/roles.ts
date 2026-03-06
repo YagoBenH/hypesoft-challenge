@@ -1,6 +1,6 @@
 type JwtPayload = {
-  exp?: number; // expires at (seconds)
-  nbf?: number; // not valid before (seconds)
+  exp?: number; 
+  nbf?: number; 
   realm_access?: { roles?: string[] };
   resource_access?: Record<string, { roles?: string[] }>;
 };
@@ -13,18 +13,15 @@ function decodeBase64Url(input: string): string {
   const base64 = input.replace(/-/g, "+").replace(/_/g, "/");
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
 
-  // Browser (and Node 18+)
   if (typeof globalThis.atob === "function") {
     return globalThis.atob(padded);
   }
-
-  // Fallback (Node). Avoids static import to keep it simple.
   const BufferRef = (globalThis as unknown as { Buffer?: typeof Buffer }).Buffer;
   if (BufferRef?.from) {
     return BufferRef.from(padded, "base64").toString("utf-8");
   }
 
-  throw new Error("Não foi possível decodificar base64 (atob/Buffer indisponível).");
+  throw new Error("Não foi possível decodificar base64.");
 }
 
 function readPayload(token: string): JwtPayload | null {
@@ -67,7 +64,7 @@ export function isJwtExpired(token: string, leewaySeconds = 0): boolean {
 
 /**
  * Valida "claims de tempo" (nbf/exp). Isso NÃO valida assinatura do JWT.
- * Retorna uma mensagem amigável ou null (ok).
+ * Retorna uma mensagem amigável ou null .
  */
 export function validateJwtClaims(token: string): string | null {
   const payload = readPayload(token);

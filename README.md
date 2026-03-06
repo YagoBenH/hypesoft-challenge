@@ -14,8 +14,9 @@ Aplicação frontend em Next.js com autenticação via Keycloak e consumo de API
 
 - Node.js 20+
 - npm 10+
-- Keycloak acessível (local ou remoto)
-- API backend acessível (local ou remota)
+- Docker (para subir o Keycloak local)
+
+> Este frontend já inclui um mock de dashboard via Next API em `/api/metrics/dashboard`.
 
 ## Configuração de ambiente
 
@@ -37,12 +38,66 @@ Copy-Item .env.example .env.local
 - `NEXT_PUBLIC_KEYCLOAK_URL`: URL base do Keycloak (ex.: `http://localhost:8080`)
 - `NEXT_PUBLIC_KEYCLOAK_REALM`: realm usado pela aplicação
 - `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID`: client id da SPA no Keycloak
-- `NEXT_PUBLIC_API_URL`: URL base da API (ex.: `http://localhost:5000`)
+
+### Variáveis para a API do dashboard
+
+Este projeto pode funcionar de 2 formas:
+
+1) **Mock local (recomendado para testar rápido)**
+
+- `API_URL=http://localhost:3000/api`
+
+Isso faz o dashboard chamar `http://localhost:3000/api/metrics/dashboard` (mock do Next).
+
+2) **Backend real (se você tiver uma API rodando)**
+
+- `NEXT_PUBLIC_API_URL=http://localhost:5000` (exemplo)
+
+> Não tem um backend, use o mock.
+
+## Mock do endpoint do Dashboard
+
+Para facilitar testes sem backend, este projeto expõe um endpoint mock em:
+
+- `GET http://localhost:3000/api/metrics/dashboard`
+
+Ele retorna uma lista fixa de produtos (`Product[]`) e é implementado em:
+
+- `src/app/api/metrics/dashboard/route.ts`
+
+### Autenticação (mock)
+
+O mock valida apenas se existe o header:
+
+- `Authorization: Bearer <token>`
+
+(Ele não valida a assinatura do token; serve apenas para simular uma API protegida.)
+
+### Como testar
+
+No Postman:
+
+1. Faça um `GET` para `http://localhost:3000/api/metrics/dashboard`
+2. Aba **Authorization** → **Bearer Token** → cole o token
+3. Envie e valide se a resposta é um array de produtos
 
 ## Rodando o projeto (modo desenvolvimento)
 
+1) Instale dependências:
+
 ```bash
 npm install
+```
+
+2) Suba o Keycloak via Docker (na pasta `frontend/`):
+
+```bash
+docker compose up -d
+```
+
+3) Rode o frontend:
+
+```bash
 npm run dev
 ```
 
@@ -52,35 +107,59 @@ Abra: `http://localhost:3000`
 
 ### Docker para dependências
 
-Este repositório **não possui `docker-compose.yml`** atualmente. Então você pode:
+O Keycloak pode ser iniciado via `docker compose` (arquivo `docker-compose.yml` dentro de `frontend/`).
 
-- subir Keycloak/API em containers manualmente e apontar as URLs no `.env.local`.
+#### Subindo Keycloak com Docker Compose
 
-### Subindo Keycloak com Docker (manual)
+O arquivo `docker-compose.yml` (dentro de `frontend/`) sobe um Keycloak local na porta `8080`.
 
-Execute:
+Depois acesse Clique para cadastrar novo usuário no login do Keycloak:
 
-```bash
-docker run --name keycloak -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.1.0 start-dev
-```
-
-Depois acesse:
-
-- `http://localhost:8080`
-- Clique em **Administration Console**
+Vai levar para:
+- `http://localhost:8080/admin`
 - Login admin:
 	- usuário: `admin`
 	- senha: `admin`
 
-Comandos úteis:
 
-```bash
-docker logs -f keycloak
-docker stop keycloak
-docker rm -f keycloak
-```
+## Primeiro acesso (cadastrar usuário no Keycloak)
 
-> Ajuste o `.env.local` do frontend para apontar para esse Keycloak (`NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8080`).
+O login do app usa o Keycloak (OpenID Connect) no realm configurado no frontend (ex.: `myrealm`).
+O usuário `admin/admin` é do **Admin Console**, e serve para você cadastrar o realm/client/usuários.
+
+### 1) Criar/selecionar realm
+
+1. Abra `http://localhost:8080/admin` e faça login com `admin/admin`.
+2. No seletor de realm (canto superior esquerdo), crie ou selecione o realm `myrealm`.
+
+### 2) Criar/configurar o client da SPA
+
+No realm `myrealm`:
+
+1. Vá em **Clients** → **Create client**.
+2. `Client type`: **OpenID Connect**
+3. `Client ID`: `frontend-spa` (precisa bater com `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID`).
+4. Configure como SPA/public client:
+	- `Client authentication`: **OFF**
+	- `Standard flow`: **ON**
+5. Ajuste:
+	- **Valid redirect URIs**: `http://localhost:3000/*`
+	- **Web origins**: `http://localhost:3000`
+
+### 3) Cadastrar um usuário e senha
+
+No realm `myrealm`:
+
+1. Vá em **Users** → **Create user**.
+2. Preencha `Username` (ex.: `admin`) e mantenha `Enabled` ligado.
+3. Após criar, abra o usuário e vá em **Credentials**.
+4. Defina a senha (ex.: `admin`) e deixe `Temporary` como **OFF**.
+
+### 4) Voltar para o frontend e entrar
+
+1. Abra `http://localhost:3000/login`.
+2. Se você acabou de cadastrar o usuário no Keycloak, dê um **reload** na página de login.
+3. Clique em **Continuar** e faça login no Keycloak com o usuário que você criou.
 
 ## Fluxo de autenticação esperado
 
@@ -91,21 +170,7 @@ docker rm -f keycloak
 
 ## Troubleshooting
 
-### 1) `Keycloak env vars ausentes`
-
-Preencha no `.env.local`:
-
-- `NEXT_PUBLIC_KEYCLOAK_URL`
-- `NEXT_PUBLIC_KEYCLOAK_REALM`
-- `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID`
-
-### 2) `Defina NEXT_PUBLIC_API_URL`
-
-Defina `NEXT_PUBLIC_API_URL` no `.env.local`.
-
-### 3) Erro de login/redirect no Keycloak
-
-Verifique no client do Keycloak:
+Preencher no client do Keycloak:
 
 - Valid Redirect URIs (incluindo `http://localhost:3000/*`)
 - Web Origins (incluindo `http://localhost:3000`)

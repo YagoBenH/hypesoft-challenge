@@ -27,11 +27,7 @@ export function AuthButton({
 }
 export const Button = AuthButton;
 
-export function ButtonLink({
-  href,
-  children,
-  className = "",
-}: {
+export function ButtonLink({ href,  children,  className = "",}: {
   href: string;
   children: ReactNode;
   className?: string;
